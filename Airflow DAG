@@ -1,0 +1,41 @@
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from datetime import datetime
+
+with DAG(
+    dag_id="single_source_truth",
+    start_date=datetime(2025, 1, 1),
+    schedule="@daily",
+    catchup=False
+) as dag:
+
+    api_ingest = BashOperator(
+        task_id="api_ingest",
+        bash_command="python /opt/airflow/ingestion/api_to_gcs.py"
+    )
+
+    csv_ingest = BashOperator(
+        task_id="csv_ingest",
+        bash_command="python /opt/airflow/ingestion/csv_to_gcs.py"
+    )
+
+    mysql_ingest = BashOperator(
+        task_id="mysql_ingest",
+        bash_command="python /opt/airflow/ingestion/mysql_to_gcs.py"
+    )
+
+    dbt_run = BashOperator(
+        task_id="dbt_run",
+        bash_command="dbt run"
+    )
+
+    dbt_test = BashOperator(
+        task_id="dbt_test",
+        bash_command="dbt test"
+    )
+
+    (
+        [api_ingest, csv_ingest, mysql_ingest]
+        >> dbt_run
+        >> dbt_test
+    )
