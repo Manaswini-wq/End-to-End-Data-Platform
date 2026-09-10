@@ -1,0 +1,28 @@
+import pandas as pd
+import sqlalchemy
+from google.cloud import storage
+
+engine = sqlalchemy.create_engine(
+    "mysql+pymysql://user:password@localhost/ecommerce"
+)
+
+query = """
+SELECT *
+FROM customers
+"""
+
+df = pd.read_sql(query, engine)
+
+file_name = "customers.csv"
+
+df.to_csv(file_name, index=False)
+
+client = storage.Client()
+
+bucket = client.bucket("de_project_bucket")
+
+bucket.blob(
+    "raw/customers/customers.csv"
+).upload_from_filename(file_name)
+
+print("Database Extract Uploaded")
