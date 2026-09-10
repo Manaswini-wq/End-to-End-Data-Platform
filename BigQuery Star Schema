@@ -1,0 +1,19 @@
+fact_sales
+
+| Column       |
+| ------------ |
+| sale\_id     |
+| product\_id  |
+| customer\_id |
+| amount       |
+| quantity     |
+| order\_date  |
+
+dim_product
+
+| Column      |
+| ----------- |
+| product\_id |
+| name        |
+| category    |
+| brand       |
