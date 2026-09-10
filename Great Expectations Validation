@@ -1,0 +1,17 @@
+import great_expectations as gx
+
+context = gx.get_context()
+
+validator = context.sources.pandas_default.read_csv(
+    "sales.csv"
+)
+
+validator.expect_column_values_to_not_be_null(
+    "sale_id"
+)
+
+validator.expect_column_values_to_be_unique(
+    "sale_id"
+)
+
+validator.save_expectation_suite()
