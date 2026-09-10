@@ -1,0 +1,26 @@
+import requests
+import pandas as pd
+from google.cloud import storage
+from datetime import datetime
+
+API_URL = "https://dummyjson.com/products"
+
+response = requests.get(API_URL)
+
+data = response.json()["products"]
+
+df = pd.DataFrame(data)
+
+file_name = f"products_{datetime.now().date()}.csv"
+
+df.to_csv(file_name, index=False)
+
+client = storage.Client()
+
+bucket = client.bucket("de_project_bucket")
+
+blob = bucket.blob(f"raw/products/{file_name}")
+
+blob.upload_from_filename(file_name)
+
+print("Uploaded Successfully")
