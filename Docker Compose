@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  airflow:
+
+    image: apache/airflow:latest
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./airflow:/opt/airflow
+
+  postgres:
+
+    image: postgres
+
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
