@@ -1,0 +1,13 @@
+from google.cloud import storage
+
+local_file = "sales.csv"
+
+client = storage.Client()
+
+bucket = client.bucket("de_project_bucket")
+
+blob = bucket.blob("raw/sales/sales.csv")
+
+blob.upload_from_filename(local_file)
+
+print("CSV Uploaded")
